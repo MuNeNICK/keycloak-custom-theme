@@ -31,37 +31,19 @@ jobs:
     if: needs.check_if_version_upgraded.outputs.is_upgraded_version == 'true'
     steps:
         - uses: actions/checkout@v4
-        
         - uses: actions/setup-node@v4
           with:
-            node-version: '18'
+            node-version: '20'  # Specify Node.js version
             
-        # キャッシュの設定
-        - name: Cache dependencies
-          uses: actions/cache@v3
-          with:
-            path: ~/.npm
-            key: npm-${{ hashFiles('package-lock.json') }}
-            restore-keys: npm-
-
-        # TypeScriptの特定バージョンをインストール
-        - name: Install specific typescript version
-          run: npm install typescript@4.9.5 --save-dev
-            
-        # 依存関係のインストール
+        # Install dependencies with legacy peer deps
         - name: Install dependencies
-          run: |
-            npm install --legacy-peer-deps --force
-            npm install --save-dev @babel/plugin-proposal-private-property-in-object
-            
-        # ESLintの警告を無視してビルド
-        - name: Build Keycloak theme
-          env:
-            CI: false  # 警告をエラーとして扱わない
-            DISABLE_ESLINT_PLUGIN: true  # ESLintチェックを無効化
-          run: npm run build-keycloak-theme
+          run: npm install --legacy-peer-deps
           
-        # GitHubリリースの作成
+        # Build Keycloak theme
+        - name: Build Keycloak theme
+          run: CI=false npm run build-keycloak-theme
+          
+        # Create GitHub release
         - uses: softprops/action-gh-release@v2
           with:
               name: Release v${{ needs.check_if_version_upgraded.outputs.to_version }}
