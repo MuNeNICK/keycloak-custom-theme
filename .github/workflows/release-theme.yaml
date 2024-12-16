@@ -34,17 +34,14 @@ jobs:
         - uses: actions/checkout@v4
         - uses: actions/setup-node@v4
           with:
-            node-version: '20'  # Specify Node.js version
+            node-version: '20'
             
-        # Install dependencies with legacy peer deps
         - name: Install dependencies
           run: npm install --legacy-peer-deps
           
-        # Build Keycloak theme
         - name: Build Keycloak theme
           run: CI=false npm run build-keycloak-theme
           
-        # Create GitHub release
         - uses: softprops/action-gh-release@v2
           with:
               name: Release v${{ needs.check_if_version_upgraded.outputs.to_version }}
