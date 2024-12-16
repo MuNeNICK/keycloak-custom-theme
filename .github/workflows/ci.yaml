@@ -1,11 +1,12 @@
-name: ci
+name: release-theme
 on:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: write
 
 jobs:
   check_if_version_upgraded:
